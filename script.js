@@ -9,46 +9,41 @@ console.log(users);
 
 let user6 = {"name":"Vova","age":18,"id":1568803949164};
 
-class ClassLocalStorage{
+class LocalStorage{
 
-  static addUsersToLocalStorage(key, list){
+  static addToLocalStorage(key, list){
     localStorage.setItem(key, JSON.stringify(list));
   }
 
-  static addUserToLocalStorage(key, newUser){
-    let users = JSON.parse(localStorage.getItem(key));
+  static addOneToLocalStorage(key, newUser){
+    let users = parseObj(localStorage.getItem(key));
+    console.log(users);
     users.push(newUser);
     localStorage.setItem('users', JSON.stringify(users));
   }
 
-  static getUsersToLocalStorage(key){
+  static getFromLocalStorage(key){
     return localStorage.getItem(key);
   }
 
-  static getUserByIdFromLocalStorage(key, id){
-    let users = JSON.parse(localStorage.getItem(key));
+  static getByIdFromLocalStorage(key, id){
+    let users = parseObj(localStorage.getItem(key));
     let user = users.filter(user => user.id === id);
     return user;
   }
 
-  static updateUsersInLocalStorage(key, newList){
+  static updateInLocalStorage(key, newList){
     localStorage.setItem(key, JSON.stringify(newList));
-    let updateUsers = JSON.parse(localStorage.getItem(key));
+    let updateUsers = parseObj(localStorage.getItem(key));
     return updateUsers;
   }
 
-  static updateOneUserInLocalStorage(key, newList){
-    let userUpdate = {};
-    let users = JSON.parse(localStorage.getItem(key));
-    for (let i = 0; i < users.length; i++){
-        for (let j in users[i]){
-            if(users[i][j] !== newList[i][j]){
-              users[i][j] = newList[i][j];
-              console.log("Измененнный элемент: " + JSON.stringify(users[i]));
-            }
-        }
-      }
-    localStorage.setItem(key, JSON.stringify(users));
+  static updateOneInLocalStorage(key, newList){
+    let list = localStorage.getItem(key);
+    let updateList = JSON.stringify(newList);
+    if (list !== updateList){
+      localStorage.setItem(key, updateList);
+    }
   }  
 
   static deleteListFromLocalStorage(key){
@@ -56,7 +51,8 @@ class ClassLocalStorage{
   }
 
   static deleteListFromLocalStorageById(key, id){
-    let users = JSON.parse(localStorage.getItem(key));
+    let users = parseObj(localStorage.getItem(key));
+    console.log(users);
     let usersAfterDeleteOneUser = users.filter(user => user.id !== id);
     localStorage.setItem(key, JSON.stringify(usersAfterDeleteOneUser));
     return usersAfterDeleteOneUser;
@@ -65,46 +61,40 @@ class ClassLocalStorage{
 }
 
 
-class ClassSessionStorage{
+class SessionStorage{
 
-  static addUsersToSessionStorage(users){
-      sessionStorage.setItem('users', JSON.stringify(users));
+  static addToSessionStorage(key, list){
+      sessionStorage.setItem(key, JSON.stringify(list));
   }
 
-  static addUserToSessionStorage(newUser){
-    let users = JSON.parse(sessionStorage.getItem('users'));
+  static addOneToSessionStorage(key, newUser){
+    let users = parseObj(sessionStorage.getItem(key));
     users.push(newUser);
     sessionStorage.setItem('users', JSON.stringify(users));
   }
 
-  static getUsersToSessionStorage(users){
+  static getFromSessionStorage(users){
     return sessionStorage.getItem('users');
   }
 
-  static getUserByIdFromSessionStorage(key, id){
-      let users = JSON.parse(sessionStorage.getItem(key));
+  static getByIdFromSessionStorage(key, id){
+      let users = parseObj(sessionStorage.getItem(key));
       let user = users.filter(user => user.id === id);
       return user;
     }
 
-  static updateUsersInSessionStorage(key, newList){
+  static updateInSessionStorage(key, newList){
     sessionStorage.setItem(key, JSON.stringify(newList));
     let updateUsers = JSON.parse(sessionStorage.getItem(key));
     return updateUsers;
   }
 
-  static updateOneUserInSessionStorage(key, newList){
-    let userUpdate = {};
-    let users = JSON.parse(sessionStorage.getItem(key));
-    for (let i = 0; i < users.length; i++){
-        for (let j in users[i]){
-            if(users[i][j] !== newList[i][j]){
-              users[i][j] = newList[i][j];
-              console.log("Измененнный элемент: " + JSON.stringify(users[i]));
-            }
-        }
-      }
-    sessionStorage.setItem(key, JSON.stringify(users));
+  static updateOneInSessionStorage(key, newList){
+    let list = sessionStorage.getItem(key);
+    let updateList = JSON.stringify(newList);
+    if (list !== updateList){
+      sessionStorage.setItem(key, updateList);
+    }
   }  
 
   static deleteListFromSessionStorage(key){
@@ -112,7 +102,7 @@ class ClassSessionStorage{
   }
 
   static deleteListFromSessionStorageById(key, id){
-    let users = JSON.parse(sessionStorage.getItem(key));
+    let users = parseObj(sessionStorage.getItem(key));
     let usersAfterDeleteOneUser = users.filter(user => user.id !== id);
     sessionStorage.setItem(key, JSON.stringify(usersAfterDeleteOneUser));
     return usersAfterDeleteOneUser;
@@ -121,20 +111,30 @@ class ClassSessionStorage{
 
 }
 
+
+function parseObj(key){
+  if(!!key){
+    return JSON.parse(key);
+  }
+  else console.log("Нет массива с указанным ключом");
+}
+
+
+
 //Добавление списка элементов по ключу в LocalStorage
-ClassLocalStorage.addUsersToLocalStorage("users", users);
+LocalStorage.addToLocalStorage("users", users);
 //Добавление списка элементов по ключу в SessionStorage
-ClassSessionStorage.addUsersToSessionStorage(users);
+SessionStorage.addToSessionStorage("users", users);
 //Добавление 1 элемента в список по ключу в LocalStorage
-ClassLocalStorage.addUserToLocalStorage("users", user6);
+LocalStorage.addOneToLocalStorage("users", user6);
 //Добавление 1 элемента в список по ключу в SessionStorage
-ClassSessionStorage.addUserToSessionStorage(user6);
+//SessionStorage.addOneToSessionStorage("users", user6);
 //Получения списка элементов по ключу из LocalStorage
-console.log("Получение списка из LocalStorage: " + ClassLocalStorage.getUsersToLocalStorage("users"));
+console.log("Получение списка из LocalStorage: " + LocalStorage.getFromLocalStorage("users"));
 //Получения списка элементов по ключу из SessionStorage
-console.log("Получение списка из SessionStorage: " + ClassSessionStorage.getUsersToSessionStorage(users));
+console.log("Получение списка из SessionStorage: " + SessionStorage.getFromSessionStorage(users));
 //Получения 1 элемента по ключу и идентификатору из LocalStorage
-let user = ClassLocalStorage.getUserByIdFromLocalStorage("users", 1568803949180);
+let user = LocalStorage.getByIdFromLocalStorage("users", 1568803949180);
 console.log(user);
 //Получения 1 элемента по ключу и идентификатору из SessionStorage
 
@@ -147,11 +147,11 @@ console.log(user);
 //   {"name":"Petya","age":25,"id":1568803949171},
 //   {"name":"Petya","age":20,"id":1568803949166},
 //   ];
-// let updateList = ClassLocalStorage.updateUsersInLocalStorage("users", newUsers);
+// let updateList = LocalStorage.updateInLocalStorage("users", newUsers);
 // console.log(updateList);
 
 //Обновление списка по ключу SessionStorage
-// let updateList = ClassSessionStorage.updateUsersInSessionStorage("users", newUsers);
+// let updateList = SessionStorage.updateInSessionStorage("users", newUsers);
 // console.log(updateList);
 
 //Oбновление 1 элемента в списке по ключу в LocalStorage
@@ -161,29 +161,24 @@ let oneNewUser = [
   {"name":"Kolya","age":29,"id":1568803949175},
   {"name":"Anton","age":25,"id":1568803949171},
   {"name":"Vsevolod","age":20,"id":1568803949166},
-  {"name":"Vova","age":21,"id":1568803949163}
   ];
-//let updateOneUser = ClassLocalStorage.updateOneUserInLocalStorage("users", oneNewUser);
+LocalStorage.updateOneInLocalStorage("users", oneNewUser);
 
 //Oбновление 1 элемента в списке по ключу в SessionStorage
-let updateOneUser = ClassSessionStorage.updateOneUserInSessionStorage("users", oneNewUser);
+let updateOneUser = SessionStorage.updateOneInSessionStorage("users", oneNewUser);
 
 //Удаление списка по ключу в LocalStorage
-// ClassLocalStorage.deleteListFromLocalStorage("users");
+// LocalStorage.deleteListFromLocalStorage("users");
 
 //Удаление списка по ключу в SessionStorage
-//ClassSessionStorage.deleteListFromSessionStorage("users");
+//SessionStorage.deleteListFromSessionStorage("users");
 
 
 //Удаления элемента в списке по ключу и идентификатору в LocalStorage
-let listAfterDeleteElement = ClassLocalStorage.deleteListFromLocalStorageById("users", 1568803949176);
-console.log(listAfterDeleteElement);
+// let listAfterDeleteElement = LocalStorage.deleteListFromLocalStorageById("users", 1568803949176);
+// console.log(listAfterDeleteElement);
 
 
 //Удаления элемента в списке по ключу и идентификатору в LocalStorage
-let listAfterDeleteElement = ClassSessionStorage.deleteListFromSessionStorageById("users", 1568803949176);
-console.log(listAfterDeleteElement);
-
-
-
-
+//let listAfterDeleteElement = SessionStorage.deleteListFromSessionStorageById("users", 1568803949176);
+//console.log(listAfterDeleteElement);
